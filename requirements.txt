@@ -1,0 +1,2 @@
+# No external dependencies required
+# ftplib is included in standard library
