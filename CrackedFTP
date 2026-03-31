@@ -18,7 +18,7 @@ def get_target_ip():
         else:
             print("ERROR: Invalid IP address format. Please provide a valid IP.")
 
-def CrackedFTP(target_ip, username="admin", wordlist_path="senhas.txt"):
+def CrackedFTP(target_ip, username="admin", wordlist_path="pw.txt"):
     # Attempt FTP brute force with error handling
     try:
         with open(wordlist_path, "r") as file:
